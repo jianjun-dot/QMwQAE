@@ -1,16 +1,16 @@
 import numpy as np
 from qiskit import QuantumCircuit
-import QMwQAE.circuit_builder as circuit_builder
+import circuit_builder
 import examples
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from qiskit.algorithms import EstimationProblem
 
 class Experiment():
-    def __init__(self, sim_params:circuit_builder.Simulation_parameters):
+    def __init__(self, sim_params: circuit_builder.Simulation_parameters):
         self.sim_params = sim_params
 
-    def classical_equivalent_runs_calculator(self, shots: int, max_depth: int)-> int:
+    def _classical_equivalent_runs_calculator(self, shots: int, max_depth: int)-> int:
         """calculates the equivalent number of classical runs
 
         Args:
@@ -21,13 +21,13 @@ class Experiment():
             int: classical shots
         """
         max_depth_index = self.sim_params.max_depth_range.index(max_depth)
-        depth_range = self.sim_params.max_depth_range[:max_depth_index]
-
+        depth_range = self.sim_params.max_depth_range[:max_depth_index+1]
+        
         assert depth_range[-1] == max_depth
 
         return shots * np.sum([2 * m +1 for m in depth_range])
 
-    def classical_sample_single(self, shots, sequence, classical_model):
+    def _classical_sample_single(self, shots, sequence, classical_model):
        
         initial_state = self.sim_params.starting_state
         sequence_length = self.sim_params.sequence_length
@@ -40,7 +40,7 @@ class Experiment():
             prob_list.append(curr_prob)
         return prob_list
 
-    def amplitude_estimate_bulk_sample_single(self, max_depth):
+    def _amplitude_estimate_bulk_sample_single(self, max_depth):
     
         sample_size = self.sim_params.sample_size
         shots = self.sim_params.shots
@@ -76,14 +76,14 @@ class Experiment():
         all_classical_estimates = []
         true_probability = classical_model.calculate_true_prob(sequence, self.sim_params.starting_state)
         for curr_depth in tqdm(max_depth_range, desc = 'progress', leave = False):
-            curr_quantum_estimates = self.amplitude_estimate_bulk_sample_single(curr_depth)
+            curr_quantum_estimates = self._amplitude_estimate_bulk_sample_single(curr_depth)
             curr_quantum_mean = np.mean(curr_quantum_estimates)
             curr_quantum_std = np.std(curr_quantum_estimates)
             # unbiased estimate
             curr_quantum_std = np.sqrt(len(curr_quantum_estimates)/(len(curr_quantum_estimates)-1)) * curr_quantum_std
             all_quantum_estimates.append([curr_quantum_mean, curr_quantum_std])
-            classical_runs = self.classical_equivalent_runs_calculator(shots, curr_depth)
-            curr_classical_estimates = self.classical_sample_single(classical_runs, sequence, classical_model)
+            classical_runs = self._classical_equivalent_runs_calculator(shots, curr_depth)
+            curr_classical_estimates = self._classical_sample_single(classical_runs, sequence, classical_model)
             curr_classical_mean = np.mean(curr_classical_estimates)
             curr_classical_std = np.std(curr_classical_estimates)
             curr_classical_std = np.sqrt(len(curr_classical_estimates)/(len(curr_classical_estimates)-1)) * curr_classical_std
@@ -162,7 +162,7 @@ class Experiment():
         else:
             raise Exception("Input format: (error, estimated_prob) or (max_depth)")
         self.sim_params.set_sampling_scheme(max_depth, "LIS")
-        quantum_estimates = self.amplitude_estimate_bulk_sample_single(max_depth)
+        quantum_estimates = self._amplitude_estimate_bulk_sample_single(max_depth)
         quantum_mean = np.mean(quantum_estimates)
         quantum_std = np.std(quantum_estimates)
         print("estimated probability: {} ({})".format(quantum_mean, quantum_std))
@@ -221,10 +221,12 @@ class Experiment():
         total_qubits = self.sim_params.sequence_length + self.sim_params.memory_size
         sequence = self.sim_params.sequence_to_amplify
         my_qc = circuit_builder.Quantum_circuit_builder(self.sim_params)
+        my_qc.build_circuit_components(self.sim_params)
         A = my_qc.unitary_evolution
 
         class Q_operator(QuantumCircuit):
             def __init__(self, size, circuit):
+                super().__init__(size)
                 self.Q = circuit
                 self.total_qubits = size
                 self.append(circuit, [x for x in range(size)])
@@ -237,9 +239,8 @@ class Experiment():
         Q = Q_operator(total_qubits, my_qc.amplifier)
         qubits_to_measure = [x for x in range(self.sim_params.sequence_length)]
         
-        def good_state_fn(string):
-            return all(string[i] == sequence[i] for i in range(len(string)))
-        
+        good_state_fn = lambda string : all(string[i] == sequence[i] for i in range(len(string)))
+
         problem = EstimationProblem(
             state_preparation=A,
             grover_operator = Q,
@@ -254,26 +255,26 @@ if __name__ == "__main__":
     ###############################
     # for perturbed coin
     p = 0.1
-    method = ["LIS", 1]
-    sequence = '000'
+    method = ["PIS", 2]
+    sequence = '0000'
 
     sequence_length = len(sequence)
     shots = 100
-    sample_size = 100
+    sample_size = 1000
     starting_state = 0
-    max_depth = 5
+    max_depth = 8
 
     my_coin = examples.Perturbed_coin(p, p, starting_state)
     my_params = examples.Perturbed_coin_simulation_params(p, sequence, sample_size, shots, starting_state, method, max_depth)
     
     my_expt = Experiment(my_params)
     error = 0.0001
-    estimated_prob = 0.001
+    estimated_prob = 0.0001
     # my_expt.compare_quantum_advantage(my_coin)
 
     # my_expt.estimate_probability(10)
-    # my_expt.estimate_probability(error, estimated_prob)
-    my_expt.estimate_probability_quick(error, estimated_prob)
+    my_expt.estimate_probability(error, estimated_prob)
+    # my_expt.estimate_probability_quick(error, estimated_prob)
     #################################
 
     ################################

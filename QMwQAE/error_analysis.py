@@ -1,19 +1,47 @@
+from typing import Callable, Iterable
 from scipy.optimize import curve_fit
 import numpy as np
 import matplotlib.pyplot as plt
 
-def load_data(fname):
-    data = np.genfromtxt(fname, delimiter = ',', skip_header = 1)
+def load_data(path_to_file: str)-> np.ndarray:
+    """small function to load the data
+
+    Args:
+        path_to_file (str): relative/absolute path to the file 
+
+    Returns:
+        np.ndarray: imported data
+    """
+    data = np.genfromtxt(path_to_file, delimiter = ',', skip_header = 1)
     return data
 
-def cal_N_q(depth, method = "EIS", shots = 100):
-    if method == "EIS":
-        exponent = int(np.log2(depth)+1)
-        return shots * (exponent -1 +2**(exponent + 1))
-    elif method == "LIS":
-        return shots * np.sum([2*m + 1 for m in range(0,int(depth)+1)])
+def cal_N_q(depth: int, depth_range: list, shots = 100) -> int:
+    """calculates the number of calls to the algorithm
 
-def fit_two_data(fit_function, process, path, fname1, fname2):
+    Args:
+        depth (int): number of Grover iterators used
+        depth_range (str, optional): list of Grover iterators used
+        shots (int, optional): number of shots. Defaults to 100.
+
+    Returns:
+        int: number of oracle calls
+    """
+
+    depth_index = depth_range.index(depth)
+    curr_range = depth_range[:depth_index+1]
+    assert curr_range[-1] == depth
+    return shots * np.sum([2*m+1 for m in curr_range])
+
+def fit_two_data(fit_function: Callable, process: str, path: str, fname1: str, fname2: str):
+    """Get the best fit and plot for two different data set
+
+    Args:
+        fit_function (Callable): function to use for the best fit
+        process (str): the random process
+        path (str): path to the folder containing the file
+        fname1 (str): file name of the first data set
+        fname2 (str): file name of the second data set
+    """
     log_depth_range1,classical_fits1, quantum_fits1, log_Nq_range1,log_classical_std1, log_quantum_std1, quantum_fits_Nq1, classical_fits_Nq1, quantum_r_squared_1, classical_r_squared_1 = fit_data(fit_function, process, path, fname1, start = 2, method = "LIS", visualize = False)
     log_depth_range2, _, quantum_fits2, log_Nq_range2, _, log_quantum_std2, quantum_fits_Nq2, _, quantum_r_squared_2, classical_r_squared_2= fit_data(fit_function, process, path, fname2, start = 1, method = "EIS", visualize = False)
     plt.clf()
@@ -43,7 +71,7 @@ def fit_two_data(fit_function, process, path, fname1, fname2):
     plt.xlabel("$N_q$", fontsize = 15)
     plt.ylabel("Error", fontsize = 15)
     plt.tight_layout()
-    plt.show()
+    # plt.show()
     plt.savefig("Nq_EIS_LIS_"+fname1.replace("csv", "png"))
     
     
@@ -69,10 +97,25 @@ def fit_two_data(fit_function, process, path, fname1, fname2):
 #     plt.savefig("EIS_LIS_"+ fname1.replace("csv", "png"))
 # =============================================================================
 
-def fit_data(fit_function, process, path, fname, start, method, visualize = True):
+def fit_data(fit_function: Callable, process: str, path: str, fname: str, start:int, method:str, visualize = True):
+    """get the best fit for the data set
+
+    Args:
+        fit_function (Callable): the best fit function
+        process (str): name of the random process
+        path (str): path to the folder of the data
+        fname (str): file name
+        start (int): starting index of the first usable data to remove anomaly
+        method (str): schdule used
+        visualize (bool, optional): plot the graph. Defaults to True.
+
+    Returns:
+        list of np.ndarray: list of the calculated values 
+    """
     data = load_data(path+fname)
     depth_range = data[start:,0]
-    Nq_range = [cal_N_q(depth, method = method) for depth in depth_range]
+    depth_range = [int(depth) for depth in depth_range]
+    Nq_range = [cal_N_q(depth, data[:,0].tolist()) for depth in depth_range]
     classical_std = data[start:,2]
     quantum_std = data[start:,5]
 
@@ -106,17 +149,46 @@ def fit_data(fit_function, process, path, fname, start, method, visualize = True
     return log_depth_range, classical_fits, quantum_fits, log_Nq_range, log_classical_std, log_quantum_std, quantum_fits_Nq, classical_fits_Nq, quantum_r_squared, classical_r_squared
 
 
-def calc_r_square_value(best_fit_fn, y_data, x_data, best_fit_params):
+def calc_r_square_value(best_fit_fn: Callable, y_data: Iterable[float], x_data: Iterable[float], best_fit_params: Iterable[float]) -> float:
+    """calculate the r2 value of the best fit
+
+    Args:
+        best_fit_fn (Callable): best fit function
+        y_data (Iterable[float]): list of y values
+        x_data (Iterable[float]): list of x values
+        best_fit_params (Iterable[float]): list of best fit parameters
+
+    Returns:
+        float: r2 value
+    """
     residuals = y_data - best_fit_fn(x_data, *best_fit_params)
     ss_res = np.sum(residuals**2)
     ss_tot = np.sum((y_data-np.mean(y_data))**2)
     r_squared = 1 - (ss_res/ss_tot)
     return r_squared
 
-def transform_function(x):
+def transform_function(x:np.ndarray) -> np.ndarray:
+    """transform the array of floats
+
+    Args:
+        x (np.ndarray): data vector
+
+    Returns:
+        np.ndarray: array of transformed data vector
+    """
     return np.log(x)
 
-def linear_function(x, a, b):
+def linear_function(x:np.ndarray, a: float, b: float) -> np.ndarray:
+    """linear function
+
+    Args:
+        x (np.ndarray): data vector
+        a (float): coefficient
+        b (float): constant
+
+    Returns:
+        np.ndarray: dependent data vector
+    """
     return a*x + b
 
 def plot_data(path, fname, process):
@@ -182,8 +254,8 @@ def plot_absolute_error(path, fname, process):
     
 
 def main():
-    relative_path_1 = "../data/nemo/error_analysis/nemo_quantum_v_classical_sampling_for_sequence_0000_p_0.2_sample_size_1000_shots_100_max_depth_30_method_LIS.csv"
-    relative_path_2 = "../data/nemo/error_analysis/nemo_quantum_v_classical_sampling_for_sequence_0000_p_0.2_sample_size_1000_shots_100_max_depth_32_method_EIS.csv"
+    relative_path_1 = "../data/perturbed_coin/error_analysis/quantum_v_classical_sampling_for_sample_0000_p_0.1_shots_100_max_depth_30_sample_size_1000_method_LIS.csv"
+    relative_path_2 = "../data/perturbed_coin/error_analysis/quantum_v_classical_sampling_perturbed_coin_sequence_0000_p_0.1_shots_100_max_depth_36_sample_size_1000_method_PIS.csv"
     second_index = relative_path_1.find("/", 8)
     process = relative_path_1[8:second_index]
     path = "../data/"+process+ "/error_analysis/"

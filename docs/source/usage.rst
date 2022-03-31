@@ -3,11 +3,9 @@ Usage
 
 .. _installation:
 
-Installation
-------------
+Creating new stochastic models
+------------------------------
+All new stochastic models
 
-To use QMwQAE, first install it using pip:
 
-.. code-block:: console
 
-   (.venv) $ pip install QMwQAE

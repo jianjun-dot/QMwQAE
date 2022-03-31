@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import polar
-import QMwQAE.helper.gram_schmidt as gs
+import helper.gram_schmidt as gs
 from qiskit import QuantumCircuit, Aer, execute
 from qiskit.quantum_info.operators import Operator
 from tqdm import tqdm
