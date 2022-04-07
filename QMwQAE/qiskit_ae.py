@@ -2,10 +2,12 @@
 from qiskit import BasicAer
 from qiskit.utils import QuantumInstance
 from qiskit.algorithms import MaximumLikelihoodAmplitudeEstimation
-import main
+import experiment
 import examples
 
 def main():
+    """main function to demonstrate the exporting of EstimationProblem
+    """
     p = 0.2 # old notation
     print("p : {}".format(1-p))
 
@@ -23,7 +25,7 @@ def main():
 
     sim_params = examples.Perturbed_coin_simulation_params(p, sample, sample_size, shots, starting_state, method_tuple, max_depth)
 
-    my_expt = main.Experiment(sim_params)
+    my_expt = experiment.Experiment(sim_params)
 
     problem = my_expt.export_estimation_problem()
 

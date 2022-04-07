@@ -44,7 +44,6 @@ class Simulation_parameters():
     def set_schedule(self, max_depth: int, power = 1):
         
         self.create_depth_list(max_depth, power)
-        print(self.max_depth_range)
     
     def create_depth_list(self, max_depth: int, power = 1) -> list:
         """creates the schedule for the experiment

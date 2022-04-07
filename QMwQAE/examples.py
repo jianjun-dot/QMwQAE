@@ -1,11 +1,20 @@
+from typing import Iterable
 import numpy as np
 from circuit_builder import Simulation_parameters
 
-# ==================================================
-# Perturbed coin Process
-# ==================================================
-class Perturbed_coin(object):
-    def __init__(self, p0,p1, state = 2):
+##################################################
+## Perturbed coin Process
+##################################################
+class Perturbed_coin():
+    def __init__(self, p0:float,p1:float, state = 2):
+        """A more general perturbed coin class within allows for 
+        different transition probabilities between causal states 0 and 1
+
+        Args:
+            p0 (float): probability of staying in causal state 0 
+            p1 (float): probability of staying in causal state 1
+            state (int, optional): initial causal state. Defaults to 2.
+        """
         self.p0 = p0
         self.p1 = p1
         if state == 2:
@@ -13,10 +22,23 @@ class Perturbed_coin(object):
         else:
             self.state = state
 
-    def reset_state(self, state):
+    def reset_state(self, state:int):
+        """reset the causal state
+
+        Args:
+            state (int): causal state
+        """
         self.state = state
 
-    def simulate(self, sequence_length):
+    def simulate(self, sequence_length:int)->np.ndarray:
+        """simulate a sequence of outputs
+
+        Args:
+            sequence_length (int): length of sequence to generate
+
+        Returns:
+            np.ndarray: output sequence
+        """
         results = []
         for _ in range(sequence_length):
             if self.state == 0: # in the zero state
@@ -36,7 +58,18 @@ class Perturbed_coin(object):
         self.result = np.array(results, dtype = int)
         return np.array(results, dtype = int)
     
-    def sample(self, sample_size, sequence_length, initial_state):
+    def sample(self, sample_size: int, sequence_length: int, initial_state: int) -> dict:
+        """conduct a given number of trials, with each trial generating 
+        a sequence defined by sequence_length
+
+        Args:
+            sample_size (int): number of trials
+            sequence_length (int): length of each sequence
+            initial_state (int): initial causal state
+
+        Returns:
+            dict: dictionary of results, with each sequence as the key and the number of samples as the value
+        """
         all_results = {}
         for i in range(2**sequence_length):
             binary_string =  (sequence_length - len(bin(i)[2:])) * '0' +bin(i)[2:]
@@ -51,10 +84,19 @@ class Perturbed_coin(object):
         self.bulk_sample = all_results
         return all_results
     
-    def calculate_true_prob(self, sample, initial_state):
+    def calculate_true_prob(self, sequence: str, initial_state: int)->float:
+        """calculate the true probability of a sequence
+
+        Args:
+            sequence (str): the sequence to compute
+            initial_state (int): initial causal state
+
+        Returns:
+            float: probability of generating the sequence
+        """
         total_prob = 1
         curr_state = initial_state
-        for value in sample:
+        for value in sequence:
             if curr_state == 1:
                 if int(value) == 1:
                     total_prob *= self.p1
@@ -69,18 +111,36 @@ class Perturbed_coin(object):
                     curr_state = 1
         return total_prob
         
-    def probabilties(self, results):
+    def probabilties(self, results: Iterable):
+        """calculate the empirical probability 
+
+        Args:
+            results (Iterable): list of number of appearance of the sequence in each trial
+
+        Returns:
+            float, float: probabilities p0 and p1
+        """
         prob1 = np.mean(results)
         prob0 = 1 - prob1
         return prob0, prob1
 
-    def stat_complexity_analytical(self):
+    def stat_complexity_analytical(self) -> float:
+        """calculate the analytical statistical complexity
+
+        Returns:
+            float: analytical statistical complexity
+        """
         prob0 = (1-self.p1) /( 2- self.p0 - self.p1)
         prob1 = (1-self.p0) / (2- self.p0 - self.p1)
         self.complexity = - (prob0 * np.log2(prob0) + prob1 * np.log2(prob1))
         return self.complexity
 
-    def stat_complexity(self):
+    def stat_complexity(self) -> float:
+        """calculates the empirical statistical complexity
+
+        Returns:
+            float: empirical statistical complexity
+        """
         prob0, prob1 = self.probabilties(self.result)
         self.complexity = 0
         comp0 = -prob0 * np.log2(prob0)
@@ -90,6 +150,17 @@ class Perturbed_coin(object):
 
 class Perturbed_coin_simulation_params(Simulation_parameters):
     def __init__(self, p, sequence, sample_size, shots, starting_state, method_tuple, max_depth):
+        """simulation parameters for perturbed coin process
+
+        Args:
+            p (float): transition probability
+            sequence (str): sequence of interest
+            sample_size (int): number of trials to conduct
+            shots (int): shots per trial
+            starting_state (int): starting causal state
+            method_tuple (list): [schedule, power scaling]
+            max_depth (int): maximum number of Grover iterators allowed
+        """
         method = method_tuple[0]
         super(Perturbed_coin_simulation_params, self).__init__(sequence, 1, starting_state, sample_size, shots, method)
         
@@ -426,3 +497,6 @@ class Dual_poisson_sim_params(Simulation_parameters):
         return '_sequence_{}_p_{}_q1_{}_q2_{}_shots_{}_max_depth_{}_sample_size_{}_method_{}'.format(
             self.sequence_to_amplify, self.p, self.q1, self.q2, self.shots, self.max_depth_range[-1], self.sample_size, self.method
         )
+
+if __name__ == "__main__":
+    x = 2

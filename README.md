@@ -8,7 +8,7 @@ You can create a new environment for this project using `venv`:
     $ python3 -m venv <env-name>
     $ source ./<env-name>/bin/activate
 
-Alternatively, you can use `conda`:
+Alternatively, you can use :code:`conda`:
 
     (base) $ conda create --name <env-name> 
     (base) $ conda activate <env-name>

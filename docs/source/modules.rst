@@ -7,6 +7,6 @@ QMwQAE
    circuit_builder
    error_analysis
    examples
+   experiment
    helper
-   main
    qiskit_ae
