@@ -175,16 +175,27 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
         self._define_starting_vectors()
     
     def _define_causal_states(self):
+        """defines causal states
+        """
         causal_state_0 = np.array([np.sqrt(self.p), np.sqrt(1-self.p)])
         causal_state_1 = np.array([np.sqrt(1-self.p), np.sqrt(self.p)])
         self.causal_states = [causal_state_0, causal_state_1]
     
     def _define_starting_vectors(self):
+        """defines starting vectors
+        """
         first_vector = np.array([np.sqrt(self.p), 0, np.sqrt(1-self.p), 0])
         second_vector = np.array([0, np.sqrt(1-self.p), 0, np.sqrt(self.p)])
         self.start_vectors = [first_vector, second_vector]
     
-    def set_sampling_scheme(self, max_depth, method, *args):
+    def set_sampling_scheme(self, max_depth: int, method: str, *args):
+        """set the schedule
+
+        Args:
+            max_depth (int): maximum number of Grover iterators
+            method (str): type of schedule
+        """
+
         #if method is PIS, args[0] should contain the power
         if method == "PIS":
             power = args[0]
@@ -192,7 +203,12 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
             power = 1
         self.max_depth_range = self.create_depth_list(max_depth, power)
 
-    def get_fname(self):
+    def get_fname(self) -> str:
+        """returns the string for the file name
+
+        Returns:
+            str: file name
+        """
         return 'perturbed_coin_sequence_{}_p_{}_shots_{}_max_depth_{}_sample_size_{}_method_{}'.format(
             self.sequence_to_amplify, self.p, self.shots, self.max_depth_range[-1], self.sample_size, self.method
         )
@@ -203,12 +219,26 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
 
 # classical simulator
 class Nemo_process(object):
-    def __init__(self, p):
+    def __init__(self, p: float):
+        """The classical model for the Nemo process
+
+        Args:
+            p (float): probability of transition to causal state 2
+        """
         self.p = p
         self.state = 0
         self.topological_complexity = np.log2(3)
 
-    def simulate(self, sequence_length, starting_state = 0):
+    def simulate(self, sequence_length: int, starting_state = 0) -> str:
+        """simulates the Nemo process
+
+        Args:
+            sequence_length (int): length of sequence to produce
+            starting_state (int, optional): starting causal state. Defaults to 0.
+
+        Returns:
+            str: output sequence
+        """
         result_container = []
         state_container = []
         if starting_state == "random":
@@ -240,14 +270,30 @@ class Nemo_process(object):
         self.state_container = np.array(state_container)
         return ''.join([str(x) for x in result_container])
     
-    def sample(self, sample_size, sequence_length, starting_state):
+    def sample(self, sample_size: int, sequence_length: int, starting_state: int) -> dict:
+        """conduct a given number of trials, with each trial generating 
+        a sequence defined by sequence_length
+
+        Args:
+            sample_size (int): number of trials
+            sequence_length (int): length of each sequence
+            initial_state (int): initial causal state
+
+        Returns:
+            dict: dictionary of results, with each sequence as the key and the number of samples as the value
+        """
         result_dict = {}
         for _ in range(sample_size):
             sequence = self.simulate(sequence_length, starting_state = starting_state)
             result_dict[sequence] = result_dict.get(sequence, 0) + 1
         return result_dict
     
-    def calc_stat_complexity(self):
+    def calc_stat_complexity(self)-> float:
+        """calculate the empirical statistical complexity of the process
+
+        Returns:
+            float: statistical complexity
+        """
         prob_state_0 = np.sum(self.state_container == 0)/len(self.state_container)
         prob_state_1 = np.sum(self.state_container == 1)/len(self.state_container)
         prob_state_2 = np.sum(self.state_container == 2)/len(self.state_container)
@@ -255,7 +301,12 @@ class Nemo_process(object):
         self.stat_complexity = -np.sum(vec_of_probs * np.log2(vec_of_probs))
         return self.stat_complexity
     
-    def calc_stat_complexity_analytical(self):
+    def calc_stat_complexity_analytical(self)-> float:
+        """calculate the analytical statistical complexity
+
+        Returns:
+            float: statistical complexity
+        """
         prob_state_0 = 1/(3 - 2* self.p)
         prob_state_1 = (1-self.p)/(3 - 2* self.p)
         prob_state_2 = (1-self.p)/(3 - 2* self.p)
@@ -263,7 +314,16 @@ class Nemo_process(object):
         self.stat_complexity_analytical = -np.sum(vec_of_probs * np.log2(vec_of_probs))
         return self.stat_complexity_analytical
     
-    def calculate_true_prob(self, sequence, starting_state):
+    def calculate_true_prob(self, sequence: str, starting_state: int)-> float:
+        """calculates the probability of a given sequence
+
+        Args:
+            sequence (str): sequence of interest
+            starting_state (int): starting causal state
+
+        Returns:
+            float: true probability
+        """
         curr_state = starting_state
         true_prob = 1
         for element in sequence:
@@ -290,7 +350,19 @@ class Nemo_process(object):
 
 # quantum circuit simulation parameters
 class Nemo_sim_params(Simulation_parameters):
-    def __init__(self, p, sequence, memory_size, sample_size, shots, starting_state, method_tuple, max_depth):
+    def __init__(self, p: float, sequence: str, memory_size: int, sample_size: int, shots: int, starting_state: int, method_tuple: list, max_depth: int):
+        """the simulation parameter class for Nemo process
+
+        Args:
+            p (float): characteristic probability
+            sequence (str): sequence of interest
+            memory_size (int): number of memory qubit
+            sample_size (int): number of trials to conduct
+            shots (int): number of shots per trial
+            starting_state (int): starting causal state
+            method_tuple (list): [method, power]
+            max_depth (int): maximum number of Grover iterators
+        """
         method = method_tuple[0]
         super(Nemo_sim_params, self).__init__(sequence, memory_size, starting_state, sample_size, shots, method)
         self.p = p
@@ -310,6 +382,8 @@ class Nemo_sim_params(Simulation_parameters):
 
     
     def _build_causal_states(self):
+        """creates the causal states
+        """
         b = (self.overlap_matrix[2,1] - self.overlap_matrix[2,0] * self.overlap_matrix[1,0])/(np.sqrt(1-self.overlap_matrix[1,0]**2))
         c = np.sqrt(1- self.overlap_matrix[2,0]**2 - b**2)
 
@@ -318,7 +392,12 @@ class Nemo_sim_params(Simulation_parameters):
         state_3 = np.array([self.overlap_matrix[0,2], b, c])
         self.causal_states = [state_1, state_2, state_3]
     
-    def _build_starting_vectors(self):
+    def _build_starting_vectors(self)-> list:
+        """creates the starting vectors
+
+        Returns:
+            list: list of starting vectors
+        """
         identity = np.eye(8)
         v1 = np.array([
             np.sqrt(self.p), 
@@ -348,7 +427,13 @@ class Nemo_sim_params(Simulation_parameters):
 
         return self.start_vectors
     
-    def set_sampling_scheme(self, max_depth, method, *args):
+    def set_sampling_scheme(self, max_depth: int, method: str, *args):
+        """set the schedule
+
+        Args:
+            max_depth (int): maximum number of Grover iterators
+            method (str): type of schedule
+        """
         #if method is PIS, args[0] should contain the power
         if method == "PIS":
             power = args[0]
@@ -357,6 +442,11 @@ class Nemo_sim_params(Simulation_parameters):
         self.max_depth_range = self.create_depth_list(max_depth, power)
     
     def get_fname(self):
+        """returns the string for the file name
+
+        Returns:
+            str: file name
+        """
         return 'nemo_sequence_{}_p_{}_shots_{}_max_depth_{}_sample_size_{}_method_{}'.format(
             self.sequence_to_amplify, self.p, self.shots, self.max_depth_range[-1], self.sample_size, self.method
         )
@@ -366,19 +456,37 @@ class Nemo_sim_params(Simulation_parameters):
 # ==================================================
 
 class Dual_poisson_process(object):
-    def __init__(self, p, q1, q2):
+    def __init__(self, p: float, q1: float, q2: float):
+        """the classical dual poisson process
+
+        Args:
+            p (float): probability p
+            q1 (float): probability of staying in state 1
+            q2 (float): probability of staying in state 2
+        """
+
         self.p = p
         self.q1 = q1
         self.q2 = q2
 
-    def survival_probability(self, k):
+    def survival_probability(self, k: int) -> float:
+        """calculates the survival probability
+
+        Args:
+            k (int): number of steps 
+
+        Returns:
+            float: survival probability
+        """
+
         return self.p*self.q1**k + (1-self.p)*self.q2**k
 
-    def sample(self, shots, sequence_length, *args):
+    def sample(self, shots: int, sequence_length: int, *args):
         """
 
         Args:
             shots (int): number of shots of the experiment
+            sequence_length (int): maximum length of the sequences
             
         Returns:
             dict: dictionary that contains the sequences with their count
@@ -394,7 +502,12 @@ class Dual_poisson_process(object):
 
         return results
 
-    def simulate(self):
+    def simulate(self) -> str:
+        """simulate the Nemo process
+
+        Returns:
+            str: output sequence
+        """
         string = []
         curr_k = 0
         emitted_0 = True
@@ -411,7 +524,16 @@ class Dual_poisson_process(object):
 
         return ''.join(string)
 
-    def max_length_filter(self, results, max_length):
+    def max_length_filter(self, results: dict, max_length: int)-> dict:
+        """filter through the output results for further analysis
+
+        Args:
+            results (dict): unfiltered results
+            max_length (int): maximum length of the results
+
+        Returns:
+            dict: filtered results
+        """
         filtered_results = {}
         for i in range(max_length):
             filtered_results['0'*i+'1'] = 0
@@ -423,7 +545,15 @@ class Dual_poisson_process(object):
                 filtered_results[key] = results[key]
         return filtered_results
 
-    def calculate_true_prob(self, sequence, *args):
+    def calculate_true_prob(self, sequence: str, *args)-> float:
+        """calculate the exact probability of the sequence
+
+        Args:
+            sequence (str): sequence of interest
+
+        Returns:
+            float: true probability
+        """
         prob = 1
         for idx in range(len(sequence)):
             if sequence[idx] == '0':
@@ -433,7 +563,20 @@ class Dual_poisson_process(object):
         return prob
 
 class Dual_poisson_sim_params(Simulation_parameters):
-    def __init__(self, p, q1, q2, sample_size, sequence, shots, method_tuple, max_depth, starting_state = 0):
+    def __init__(self, p: float, q1: float, q2: float, sample_size: int, sequence: str, shots: int, method_tuple: list, max_depth: int, starting_state = 0):
+        """simulation parameters for the dual poisson process
+
+        Args:
+            p (float): characteristic probability
+            q1 (float): characteristic q1
+            q2 (float): characteristic q2
+            sample_size (int): number of trials to conduct
+            sequence (str): sequence of interest
+            shots (int): number of shots per trial
+            method_tuple (list): [method, power]
+            max_depth (int): maximum number of Grover iterators
+            starting_state (int, optional): starting causal state. Defaults to 0.
+        """
         method = method_tuple[0]
         super(Dual_poisson_sim_params, self).__init__(sequence,1, starting_state, sample_size, shots, method)
         self.p = p
@@ -450,7 +593,12 @@ class Dual_poisson_sim_params(Simulation_parameters):
         else:
             self.set_sampling_scheme(max_depth, method)
 
-    def _build_kraus(self):
+    def _build_kraus(self) -> np.ndarray:
+        """creates the Kraus operator
+
+        Returns:
+            np.ndarray: Kraus operators
+        """
         g = self.g
         A0 = np.array([
             [np.sqrt(self.q1), g * (np.sqrt(self.q2) - np.sqrt(self.q1))/np.sqrt(1-g**2)],
@@ -467,13 +615,27 @@ class Dual_poisson_sim_params(Simulation_parameters):
         self.kraus = kraus_operators
         return kraus_operators
     
-    def _build_first_causal_state(self):
+    def _build_first_causal_state(self)-> list:
+        """create the initial causal state
+
+        Returns:
+            list: initial causal state
+        """
         gamma = np.arctan(self.g*np.sqrt(self.p_bar)/np.sqrt(self.p))
         zero_state = np.array([np.sqrt(self.g**2 * self.p_bar + self.p), np.sqrt(self.p_bar) * np.sqrt(1-self.g**2) * np.exp(1j * (np.pi/2 -gamma))])
         self.causal_states = [zero_state]
         return zero_state
     
-    def max_length_filter(self, results, max_length):
+    def max_length_filter(self, results: dict, max_length: int)-> dict:
+        """filters the raw results 
+
+        Args:
+            results (dict): unfiltered results
+            max_length (int): maximum length to consider
+
+        Returns:
+            dict: filtered results
+        """
         filtered_results = {}
         for i in range(self.sequence_length):
             filtered_results['0'*i+'1'] = 0
@@ -485,7 +647,13 @@ class Dual_poisson_sim_params(Simulation_parameters):
                 filtered_results[key] = results[key]
         return filtered_results
 
-    def set_sampling_scheme(self, max_depth, method, *args):
+    def set_sampling_scheme(self, max_depth: int, method: str, *args):
+        """set the schedule
+
+        Args:
+            max_depth (int): maximum number of Grover iterators
+            method (str): type of schedule
+        """
         #if method is PIS, args[0] should contain the power
         if method == "PIS":
             power = args[0]
@@ -494,6 +662,11 @@ class Dual_poisson_sim_params(Simulation_parameters):
         self.max_depth_range = self.create_depth_list(max_depth, power)
     
     def get_fname(self):
+        """returns the string for the file name
+
+        Returns:
+            str: file name
+        """
         return '_sequence_{}_p_{}_q1_{}_q2_{}_shots_{}_max_depth_{}_sample_size_{}_method_{}'.format(
             self.sequence_to_amplify, self.p, self.q1, self.q2, self.shots, self.max_depth_range[-1], self.sample_size, self.method
         )

@@ -12,11 +12,14 @@ This module contains three sample stochastic model: Perturbed coin process, dual
 The classical models are all defined within in the script :python:`examples.py` within the :python:`QMwQAE/` directory. 
 Their corresponding parameters classes are also defined within the same file, and these classes can be imported into
 the experiment file to be input into the :python:`Experiment` class to run the algorithm. Within the :python:`experiment.py` file, there are also examples of how to 
-initialize the relevant classes. Just run the following command within the terminal to see the algorithm in action
+initialize the relevant classes. The use of all example stochastic 
+processes are all written, just commented out. Just run the following command within the terminal to see the algorithm in action
 
 .. code-block:: bash
 
     $ python experiment.py
+
+You can uncomment certain parts of the code to try out different functions
 
 Creating new stochastic models
 ------------------------------

@@ -191,7 +191,13 @@ def linear_function(x:np.ndarray, a: float, b: float) -> np.ndarray:
     """
     return a*x + b
 
-def plot_data(path, fname, process):
+def plot_data(path: str, fname: str):
+    """plots the probability against number of grover iterators
+
+    Args:
+        path (str): path to the file
+        fname (str): file name
+    """
     data = load_data(path+fname)
     max_depth_range = data[:,0]
     classical_estimates = data[:,1]
@@ -212,7 +218,14 @@ def plot_data(path, fname, process):
     plt.show()
     plt.savefig(fname.replace("csv", "png"))
 
-def plot_error_trend(path, fname, process):
+def plot_error_trend(path: str, fname: str):
+    """plots the standard error against number of grover iterators
+
+    Args:
+        path (str): path to the file
+        fname (str): file name
+    """
+
     data = load_data(path+fname)
     max_depth_range = data[:,0]
     classical_std = data[:,2]
@@ -230,7 +243,13 @@ def plot_error_trend(path, fname, process):
     plt.show()
     # plt.savefig(fname.replace("csv", "png"))
     
-def plot_absolute_error(path, fname, process):
+def plot_absolute_error(path: str, fname: str):
+    """plots the absolute error against the number of causal states
+
+    Args:
+        path (str): path to the file
+        fname (str): file name
+    """
     data = load_data(path+fname)
     max_depth_range = data[:,0]
     classical_estimates = data[:,1]

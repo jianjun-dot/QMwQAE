@@ -6,7 +6,7 @@ import experiment
 import examples
 
 def main():
-    """main function to demonstrate the exporting of EstimationProblem
+    """function to demonstrate the exporting of EstimationProblem
     """
     p = 0.2 # old notation
     print("p : {}".format(1-p))

@@ -1,7 +1,13 @@
 import numpy as np
 
 class Gram_schmidt(object):
-    def __init__(self, dim, start_vectors = []):
+    def __init__(self, dim: int, start_vectors = []):
+        """implements the gram schmidt process
+
+        Args:
+            dim (int): number of dimensions
+            start_vectors (list, optional): given starting vectors. Defaults to [].
+        """
         self.dim = dim
         self.vector_list = []
         self.num_start_vectors = len(start_vectors)
@@ -11,7 +17,12 @@ class Gram_schmidt(object):
             for vec in start_vectors:
                 self.vector_list.append(vec)
 
-    def next_vector(self, dim):
+    def next_vector(self, dim: int):
+        """generate the next orthogonal vector
+
+        Args:
+            dim (int): number of dimensions
+        """
         if not self.vector_list:
             new_vector = np.random.rand(dim, )
             new_vector = new_vector/np.linalg.norm(new_vector)
@@ -27,10 +38,17 @@ class Gram_schmidt(object):
                 self.vector_list.append(new_vector)
                 return
     def generate_vectors(self):
+        """generate next orthogonal vector
+        """
         while len(self.vector_list) < self.dim:
             self.next_vector(self.dim)
 
-    def build_unitary(self):
+    def build_unitary(self) -> np.ndarray:
+        """creates the unitary matrix
+
+        Returns:
+            np.ndarray: unitary matrix
+        """
         unitary = np.zeros((self.dim, self.dim), dtype = float)
         for i in range(self.num_start_vectors):
             unitary[:,i*2] = self.vector_list[i]

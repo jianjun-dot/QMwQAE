@@ -6,8 +6,9 @@
 Welcome to QMwQAE's documentation!
 ==================================
 
-Check out the :doc:`usage` section for further information, including how to
-:ref:`install <installation>` the project.
+Check out the :doc:`README` section for further information, including how to
+:ref:`install <installation>` the project. :doc:`usage` describes some way that
+you can utilize the package.
 
 ..
    install will show up in the documentation and link to the relevant label.

@@ -4,14 +4,6 @@ helper package
 Submodules
 ----------
 
-helper.eigen\_finder module
----------------------------
-
-.. automodule:: helper.eigen_finder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 helper.gram\_schmidt module
 ---------------------------
 

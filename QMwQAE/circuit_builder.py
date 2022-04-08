@@ -35,15 +35,21 @@ class Simulation_parameters():
 
         
 
-    def set_starting_vectors(self, starting_vectors):
+    def set_starting_vectors(self, starting_vectors: list):
+        """Set starting vectors
+
+        Args:
+            starting_vectors (list): list of starting vectors
+        """
         self.starting_vectors = starting_vectors
         
-    def set_kraus_ops(self, kraus):
-        self.kraus = kraus
+    def set_kraus_ops(self, kraus: list):
+        """set kraus operators
 
-    def set_schedule(self, max_depth: int, power = 1):
-        
-        self.create_depth_list(max_depth, power)
+        Args:
+            kraus (list): list of kraus operators
+        """
+        self.kraus = kraus
     
     def create_depth_list(self, max_depth: int, power = 1) -> list:
         """creates the schedule for the experiment

@@ -28,20 +28,38 @@ class Experiment():
 
         return shots * np.sum([2 * m +1 for m in depth_range])
 
-    def _classical_sample_single(self, shots, sequence, classical_model):
+    def _classical_sample_single(self, shots: int, sequence: str, classical_model) -> list:
+        """samples the classical model
+
+        Args:
+            shots (int): number
+            sequence (str): _description_
+            classical_model (object): the classical model object
+
+        Returns:
+            list: list of probabilities
+        """
        
         initial_state = self.sim_params.starting_state
         sequence_length = self.sim_params.sequence_length
         prob_list = []
         my_post_processor = circuit_builder.Classical_post_processor()
-        for _ in range(sample_size):
+        for _ in range(1):
             results = classical_model.sample(shots, sequence_length, initial_state)
             curr_counts = results.get(sequence, 0)
             curr_prob = my_post_processor.ml_estimation(shots, curr_counts)
             prob_list.append(curr_prob)
         return prob_list
 
-    def _amplitude_estimate_bulk_sample_single(self, max_depth):
+    def _amplitude_estimate_bulk_sample_single(self, max_depth: int)-> list:
+        """samples the quantum model
+
+        Args:
+            max_depth (int): maximum number of Grover iterators
+
+        Returns:
+            list: list of probabilities
+        """
     
         sample_size = self.sim_params.sample_size
         shots = self.sim_params.shots
