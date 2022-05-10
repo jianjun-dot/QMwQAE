@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>circuit_builder module &mdash; QMwQAE 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="error_analysis module" href="error_analysis.html" />
+    <link rel="prev" title="QMwQAE" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> QMwQAE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">QMwQAE</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">circuit_builder module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="error_analysis.html">error_analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">examples module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experiment.html">experiment module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="helper.html">helper package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qiskit_ae.html">qiskit_ae module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Readme File</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMwQAE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="modules.html">QMwQAE</a> &raquo;</li>
+      <li>circuit_builder module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/circuit_builder.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-circuit_builder">
+<span id="circuit-builder-module"></span><h1>circuit_builder module<a class="headerlink" href="#module-circuit_builder" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="circuit_builder.Classical_post_processor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">circuit_builder.</span></span><span class="sig-name descname"><span class="pre">Classical_post_processor</span></span><a class="headerlink" href="#circuit_builder.Classical_post_processor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>maximum likelihood estimator for the classical algorithm</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Classical_post_processor.log_likelihood_fn">
+<span class="sig-name descname"><span class="pre">log_likelihood_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#circuit_builder.Classical_post_processor.log_likelihood_fn" title="Permalink to this definition"></a></dt>
+<dd><p>computes the log likelihood function of p given the number of good trials</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>float</em>) – current probability</p></li>
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots</p></li>
+<li><p><strong>positives</strong> (<em>int</em>) – number of good trials</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log likelihood of p</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Classical_post_processor.ml_estimation">
+<span class="sig-name descname"><span class="pre">ml_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positives</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#circuit_builder.Classical_post_processor.ml_estimation" title="Permalink to this definition"></a></dt>
+<dd><p>function for maximum likelihood estimation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots</p></li>
+<li><p><strong>positives</strong> (<em>int</em>) – number of good trials</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>probability with maximum likelihood</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="circuit_builder.Post_processor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">circuit_builder.</span></span><span class="sig-name descname"><span class="pre">Post_processor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Post_processor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>post processor for MLAE</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Post_processor.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_successes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#circuit_builder.Post_processor.log_likelihood" title="Permalink to this definition"></a></dt>
+<dd><p>computes the log likelihood function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_successes</strong> (<em>int</em>) – number of good states measures</p></li>
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots</p></li>
+<li><p><strong>num_iter</strong> (<em>int</em>) – number of Grover iterators used</p></li>
+<li><p><strong>theta</strong> (<em>float</em>) – current estimated theta</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>log likelihood of producing result given theta</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Post_processor.ml_estimation">
+<span class="sig-name descname"><span class="pre">ml_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">estimation_algo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#circuit_builder.Post_processor.ml_estimation" title="Permalink to this definition"></a></dt>
+<dd><p>computes the maximum likelihood algorithm</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots per trial</p></li>
+<li><p><strong>estimation_algo</strong> (<em>_type_</em><em>, </em><em>optional</em>) – algorithm for maximum likelihood function. Defaults to None and uses a brute</p></li>
+<li><p><strong>search.</strong> (<em>force</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>theta with maximum likelihood</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">circuit_builder.</span></span><span class="sig-name descname"><span class="pre">Quantum_circuit_builder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><span class="pre">circuit_builder.Simulation_parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class that builds the quantum circuit</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_A_operator">
+<span class="sig-name descname"><span class="pre">build_A_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visualize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_A_operator" title="Permalink to this definition"></a></dt>
+<dd><p>create the algorithm operator for the Grover iterator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>visualize</strong> (<em>bool</em><em>, </em><em>optional</em>) – option to visualize the quantum circuit. Defaults to False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_amplifier">
+<span class="sig-name descname"><span class="pre">build_amplifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visualize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_amplifier" title="Permalink to this definition"></a></dt>
+<dd><p>assemble the Grover iterator for the quantum circuit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>visualize</strong> (<em>bool</em><em>, </em><em>optional</em>) – option to visualize the quantum circuit. Defaults to False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_circuit_components">
+<span class="sig-name descname"><span class="pre">build_circuit_components</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><span class="pre">circuit_builder.Simulation_parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_circuit_components" title="Permalink to this definition"></a></dt>
+<dd><p>create all the components in the quantum circuit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sim_params</strong> (<a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><em>Simulation_parameters</em></a>) – object containing the simulation parameters</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – not enough information provided</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_initializer_from_causal_states">
+<span class="sig-name descname"><span class="pre">build_initializer_from_causal_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><span class="pre">circuit_builder.Simulation_parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_initializer_from_causal_states" title="Permalink to this definition"></a></dt>
+<dd><p>build the unitary matrices and gates to rotate the memory qubit to the
+correct causal state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sim_params</strong> – object containing the simulation parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_initializer_from_kraus">
+<span class="sig-name descname"><span class="pre">build_initializer_from_kraus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kraus_ops</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markov_order</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_initializer_from_kraus" title="Permalink to this definition"></a></dt>
+<dd><p>creating initializer gates just from the kraus operators, by using the Markov order and
+past sequence</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kraus_ops</strong> (<em>np.ndarray</em>) – list of kraus operators</p></li>
+<li><p><strong>markov_order</strong> (<em>int</em>) – Markov order of the process</p></li>
+<li><p><strong>past</strong> (<em>str</em>) – a certain past sequence</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_oracle">
+<span class="sig-name descname"><span class="pre">build_oracle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_oracle" title="Permalink to this definition"></a></dt>
+<dd><p>create the oracle for the quantum circuit</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_phase_shift_operator">
+<span class="sig-name descname"><span class="pre">build_phase_shift_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_phase_shift_operator" title="Permalink to this definition"></a></dt>
+<dd><p>create the phase shift gate for the quantum circuit</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_unitary_from_kraus">
+<span class="sig-name descname"><span class="pre">build_unitary_from_kraus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kraus_operators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_unitary_from_kraus" title="Permalink to this definition"></a></dt>
+<dd><p>Create unitary matrix from set of kraus operators. Currently, this is only
+set to alphabet size of 2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kraus_operators</strong> (<em>list</em>) – list of kraus operators (np.ndarray)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>unitary matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_unitary_from_vectors">
+<span class="sig-name descname"><span class="pre">build_unitary_from_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_vectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'polar'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span></span></span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_unitary_from_vectors" title="Permalink to this definition"></a></dt>
+<dd><p>creates the unitary matrix from a set of start vectors created from (Binder et. al., 2017) paper</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_vectors</strong> (<em>list</em><em>, </em><em>optional</em>) – set of start vectors. Defaults to [].</p></li>
+<li><p><strong>method</strong> (<em>str</em><em>, </em><em>optional</em>) – method to fill up the unitary, either by Gram Schmidt or polar decomposition. Defaults to ‘polar’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>unitary matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.build_unitary_operator">
+<span class="sig-name descname"><span class="pre">build_unitary_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.build_unitary_operator" title="Permalink to this definition"></a></dt>
+<dd><p>create Operator class for unitary to use in quantum circuit
+from defined unitary matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.run_amplitude_estimation_circuit">
+<span class="sig-name descname"><span class="pre">run_amplitude_estimation_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.run_amplitude_estimation_circuit" title="Permalink to this definition"></a></dt>
+<dd><p>run one trial of the quanutm circuit for MLAE</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>depth_range</strong> (<em>int</em>) – the schedule</p></li>
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots per circuit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of results, with each elements being [number of grover iterators, number of good results]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.set_initializer">
+<span class="sig-name descname"><span class="pre">set_initializer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sim_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><span class="pre">circuit_builder.Simulation_parameters</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.set_initializer" title="Permalink to this definition"></a></dt>
+<dd><p>set the correct initializing gate for the experiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sim_params</strong> (<a class="reference internal" href="#circuit_builder.Simulation_parameters" title="circuit_builder.Simulation_parameters"><em>Simulation_parameters</em></a>) – object containing simulation parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Quantum_circuit_builder.single_run">
+<span class="sig-name descname"><span class="pre">single_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_amplifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">visualize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#circuit_builder.Quantum_circuit_builder.single_run" title="Permalink to this definition"></a></dt>
+<dd><p>run one trial of the quantum circuit at a certain number of Grover iterators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_amplifier</strong> (<em>int</em>) – number of Grover iterators to use</p></li>
+<li><p><strong>shots</strong> (<em>int</em>) – number of shots</p></li>
+<li><p><strong>visualize</strong> (<em>bool</em><em>, </em><em>optional</em>) – option to visualize the quantum circuit. Defaults to False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of the results</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="circuit_builder.Simulation_parameters">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">circuit_builder.</span></span><span class="sig-name descname"><span class="pre">Simulation_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EIS'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Simulation_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to contain all the essential parameters for the quantum circuit. A new stochastic process will be
+build on top of this class</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Simulation_parameters.create_depth_list">
+<span class="sig-name descname"><span class="pre">create_depth_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#circuit_builder.Simulation_parameters.create_depth_list" title="Permalink to this definition"></a></dt>
+<dd><p>creates the schedule for the experiment</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>max_depth</strong> (<em>int</em>) – maximum number of Grover iterators to use</p></li>
+<li><p><strong>power</strong> (<em>int</em><em>, </em><em>optional</em>) – degree of the polynomial scheme. Defaults to 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>Exception</strong> – invalid method given</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>schedule for the experiment</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Simulation_parameters.import_kraus">
+<span class="sig-name descname"><span class="pre">import_kraus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">relative_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Simulation_parameters.import_kraus" title="Permalink to this definition"></a></dt>
+<dd><p>imports the kraus operator from file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>relative_path</strong> (<em>str</em>) – relative path to the file</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Simulation_parameters.set_kraus_ops">
+<span class="sig-name descname"><span class="pre">set_kraus_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kraus</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Simulation_parameters.set_kraus_ops" title="Permalink to this definition"></a></dt>
+<dd><p>set kraus operators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kraus</strong> (<em>list</em>) – list of kraus operators</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="circuit_builder.Simulation_parameters.set_starting_vectors">
+<span class="sig-name descname"><span class="pre">set_starting_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">starting_vectors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#circuit_builder.Simulation_parameters.set_starting_vectors" title="Permalink to this definition"></a></dt>
+<dd><p>Set starting vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>starting_vectors</strong> (<em>list</em>) – list of starting vectors</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="QMwQAE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="error_analysis.html" class="btn btn-neutral float-right" title="error_analysis module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chen Jianjun.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

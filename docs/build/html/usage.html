@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Usage &mdash; QMwQAE 0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="QMwQAE" href="modules.html" />
+    <link rel="prev" title="Welcome to QMwQAE’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> QMwQAE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#example-of-stochastic-models">Example of Stochastic Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-new-stochastic-models">Creating new stochastic models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exporting-to-qiskit">Exporting to Qiskit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">QMwQAE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Readme File</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QMwQAE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
+<section id="example-of-stochastic-models">
+<span id="installation"></span><h2>Example of Stochastic Models<a class="headerlink" href="#example-of-stochastic-models" title="Permalink to this headline"></a></h2>
+<p>This module contains three sample stochastic model: Perturbed coin process, dual Poisson process and Nemo process.
+The classical models are all defined within in the script <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">examples</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">py</span></span></code> within the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">QMwQAE</span></span><span class="o"><span class="pre">/</span></span></code> directory.
+Their corresponding parameters classes are also defined within the same file, and these classes can be imported into
+the experiment file to be input into the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Experiment</span></span></code> class to run the algorithm. Within the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">experiment</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">py</span></span></code> file, there are also examples of how to
+initialize the relevant classes. The use of all example stochastic
+processes are all written, just commented out. Just run the following command within the terminal to see the algorithm in action</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python experiment.py
+</pre></div>
+</div>
+<p>You can uncomment certain parts of the code to try out different functions</p>
+</section>
+<section id="creating-new-stochastic-models">
+<h2>Creating new stochastic models<a class="headerlink" href="#creating-new-stochastic-models" title="Permalink to this headline"></a></h2>
+<p>As seen in the example classes, a new <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">parameters</span></span></code> class must be created. This parameters must be built on top
+of the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Simulation_parameters</span></span></code> class as defined in the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">circuit_builder</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">py</span></span></code> file.
+This class requires the definition of the following few quantities:</p>
+<ul class="simple">
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">sequence</span></span></code>: the sequence for the algorithm to estimate its probability</p></li>
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">memory_size</span></span></code>: the number of qubits that is required for the memory register</p></li>
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">starting_state</span></span></code>: the initial causal state of the system</p></li>
+</ul>
+<p>There are a few optional parameters that the user can define</p>
+<ul class="simple">
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">sample_size</span></span></code>: number of trials to conduct. Increasing this will help to give better estimate due to the Central Limit Theorem</p></li>
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">shots</span></span></code>: the number of shots per experiment. Increasing this also increases the precision of the estimate.</p></li>
+<li><p><code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">method</span></span></code>: the schedule to be used for the experiment.</p></li>
+</ul>
+<p>When the user define the new parameters class, they also have to define some variables for the
+algorithm to work. The user can provide the variables in three different manners:</p>
+<p>1. The user can provide the starting vectors to populate the odd-numbered columns in the unitary matrix. This variable should be
+a list of <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">numpy</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">ndarray</span></span></code> vectors with the variable name <code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">starting_vectors</span></span></code>. The starting vectors
+can be accompanied by a list of causal states also in <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">numpy</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">ndarray</span></span></code> under the variable name <code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">causal_states</span></span></code>.</p>
+<p>2. The user can provide the starting vectors, accompanied by a set of Kraus operators that define the action on the
+memory qubits. The Kraus operators should be provided in a list of <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">numpy</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">ndarray</span></span></code> under the variable name <code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">kraus</span></span></code>.</p>
+<p>3. The user can provide the Kraus operators with the Markov order of the process, under the variable <code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">markov_order</span></span></code>,
+and the past, under the variable <code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">past</span></span></code>.</p>
+<p>The user should also provide two different variables for saving of data</p>
+<ul class="simple">
+<li><p><code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">graph_dir</span></span></code>: the directory to save the graphs generated</p></li>
+<li><p><code class="code highlight python docutils literal notranslate"><span class="bp"><span class="pre">self</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">data_dir</span></span></code>: the directory to save the data generated</p></li>
+</ul>
+</section>
+<section id="exporting-to-qiskit">
+<h2>Exporting to Qiskit<a class="headerlink" href="#exporting-to-qiskit" title="Permalink to this headline"></a></h2>
+<p>This package allows the user to embed the Grover iterator and the algorithm operator
+into the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">EstimationProblem</span></span></code> class provided by Qiskit. This allows the user to export the circuit
+created to be used with other algorithms within the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Qiskit</span></span></code> package. The export function is within the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">experiment</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">py</span></span></code> file,
+called <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Experiment</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">export_estimation_problem</span></span></code>. The user can initialize the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Experiment</span></span></code> class with the defined <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">parameters</span></span></code> object.
+Calling the function <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">export_estimation_problem</span></span></code> with the variable <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">export</span></span></code> set as <code class="code highlight python docutils literal notranslate"><span class="kc"><span class="pre">True</span></span></code> will export the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">EstimationProblem</span></span></code> object with the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">pickle</span></span></code> module, saving the object in the
+<code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">estimationProblemPickled</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">pkl</span></span></code> file.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_expt</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">Experiment</span><span class="p">(</span><span class="n">my_params</span><span class="p">)</span> <span class="c1"># my_params is the defined parameters object</span>
+<span class="n">my_expt</span><span class="o">.</span><span class="n">export_estimation_problem</span><span class="p">(</span><span class="n">export</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># file saved if export set to True</span>
+</pre></div>
+</div>
+<p>To import the pickled file, use</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="o">&lt;</span><span class="n">path</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">file</span><span class="o">&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>alternatively, the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">Experiment</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">export_estimation_problem</span></span></code> can also output the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">EstimationProblem</span></span></code> object directly</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">my_expt</span><span class="o">.</span><span class="n">export_estimation_problem</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>An example of how to use the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">EstimationProblem</span></span></code> object is given in the file <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">qiskit_qe</span></span><span class="o"><span class="pre">.</span></span><span class="n"><span class="pre">py</span></span></code> under the <code class="code highlight python docutils literal notranslate"><span class="n"><span class="pre">QmwQAE</span></span><span class="o"><span class="pre">/</span></span></code> directory.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to QMwQAE’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="QMwQAE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Chen Jianjun.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

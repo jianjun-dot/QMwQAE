@@ -277,7 +277,7 @@ if __name__ == "__main__":
     # for perturbed coin
     p = 0.1
     method = ["EIS", 2]
-    sequence = '0000'
+    sequence = '0010'
 
     sequence_length = len(sequence)
     shots = 100
