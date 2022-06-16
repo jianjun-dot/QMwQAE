@@ -149,7 +149,7 @@ class Perturbed_coin():
         return self.complexity 
 
 class Perturbed_coin_simulation_params(Simulation_parameters):
-    def __init__(self, p, sequence, sample_size, shots, starting_state, method_tuple, max_depth):
+    def __init__(self, p, sequence, sample_size, shots, starting_state):
         """simulation parameters for perturbed coin process
 
         Args:
@@ -158,19 +158,12 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
             sample_size (int): number of trials to conduct
             shots (int): shots per trial
             starting_state (int): starting causal state
-            method_tuple (list): [schedule, power scaling]
-            max_depth (int): maximum number of Grover iterators allowed
         """
-        method = method_tuple[0]
-        super(Perturbed_coin_simulation_params, self).__init__(sequence, 1, starting_state, sample_size, shots, method)
+        super(Perturbed_coin_simulation_params, self).__init__(sequence, 1, starting_state, sample_size, shots)
         
         self.p = p
         self.graph_dir = '../graphs/perturbed_coin/' # directories for saving
         self.data_dir = '../data/perturbed_coin/error_analysis/' # directories for saving
-        if method == "PIS":
-            self.set_sampling_scheme(max_depth, method, method_tuple[1])
-        else:
-            self.set_sampling_scheme(max_depth, method)
         self._define_causal_states()
         self._define_starting_vectors()
     
@@ -187,21 +180,6 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
         first_vector = np.array([np.sqrt(self.p), 0, np.sqrt(1-self.p), 0])
         second_vector = np.array([0, np.sqrt(1-self.p), 0, np.sqrt(self.p)])
         self.start_vectors = [first_vector, second_vector]
-    
-    def set_sampling_scheme(self, max_depth: int, method: str, *args):
-        """set the schedule
-
-        Args:
-            max_depth (int): maximum number of Grover iterators
-            method (str): type of schedule
-        """
-
-        #if method is PIS, args[0] should contain the power
-        if method == "PIS":
-            power = args[0]
-        else:
-            power = 1
-        self.max_depth_range = self.create_depth_list(max_depth, power)
 
     def get_fname(self) -> str:
         """returns the string for the file name
@@ -350,7 +328,7 @@ class Nemo_process(object):
 
 # quantum circuit simulation parameters
 class Nemo_sim_params(Simulation_parameters):
-    def __init__(self, p: float, sequence: str, memory_size: int, sample_size: int, shots: int, starting_state: int, method_tuple: list, max_depth: int):
+    def __init__(self, p: float, sequence: str, memory_size: int, sample_size: int, shots: int, starting_state: int):
         """the simulation parameter class for Nemo process
 
         Args:
@@ -360,11 +338,9 @@ class Nemo_sim_params(Simulation_parameters):
             sample_size (int): number of trials to conduct
             shots (int): number of shots per trial
             starting_state (int): starting causal state
-            method_tuple (list): [method, power]
-            max_depth (int): maximum number of Grover iterators
         """
-        method = method_tuple[0]
-        super(Nemo_sim_params, self).__init__(sequence, memory_size, starting_state, sample_size, shots, method)
+
+        super(Nemo_sim_params, self).__init__(sequence, memory_size, starting_state, sample_size, shots)
         self.p = p
         self.graph_dir = 'graphs/nemo/'
         self.data_dir = 'data/nemo/error_analysis/'
@@ -375,10 +351,6 @@ class Nemo_sim_params(Simulation_parameters):
         ], dtype = float)
         self._build_causal_states()
         self._build_starting_vectors()
-        if method == "PIS":
-            self.set_sampling_scheme(max_depth, method, method_tuple[1])
-        else:
-            self.set_sampling_scheme(max_depth, method)
 
     
     def _build_causal_states(self):
@@ -426,20 +398,6 @@ class Nemo_sim_params(Simulation_parameters):
         self.start_vectors = [v1, v2, v3, v4]
 
         return self.start_vectors
-    
-    def set_sampling_scheme(self, max_depth: int, method: str, *args):
-        """set the schedule
-
-        Args:
-            max_depth (int): maximum number of Grover iterators
-            method (str): type of schedule
-        """
-        #if method is PIS, args[0] should contain the power
-        if method == "PIS":
-            power = args[0]
-        else:
-            power = 1
-        self.max_depth_range = self.create_depth_list(max_depth, power)
     
     def get_fname(self):
         """returns the string for the file name
@@ -563,7 +521,7 @@ class Dual_poisson_process(object):
         return prob
 
 class Dual_poisson_sim_params(Simulation_parameters):
-    def __init__(self, p: float, q1: float, q2: float, sample_size: int, sequence: str, shots: int, method_tuple: list, max_depth: int, starting_state = 0):
+    def __init__(self, p: float, q1: float, q2: float, sample_size: int, sequence: str, shots: int, starting_state = 0):
         """simulation parameters for the dual poisson process
 
         Args:
@@ -573,12 +531,9 @@ class Dual_poisson_sim_params(Simulation_parameters):
             sample_size (int): number of trials to conduct
             sequence (str): sequence of interest
             shots (int): number of shots per trial
-            method_tuple (list): [method, power]
-            max_depth (int): maximum number of Grover iterators
             starting_state (int, optional): starting causal state. Defaults to 0.
         """
-        method = method_tuple[0]
-        super(Dual_poisson_sim_params, self).__init__(sequence,1, starting_state, sample_size, shots, method)
+        super(Dual_poisson_sim_params, self).__init__(sequence,1, starting_state, sample_size, shots)
         self.p = p
         self.q1 = q1
         self.q2 = q2
@@ -588,10 +543,6 @@ class Dual_poisson_sim_params(Simulation_parameters):
         self.g = (np.sqrt((1-self.q1)*(1-self.q2))/(1-np.sqrt(self.q1 * self.q2)))
         self._build_kraus()
         self._build_first_causal_state()
-        if method == "PIS":
-            self.set_sampling_scheme(max_depth, method, method_tuple[1])
-        else:
-            self.set_sampling_scheme(max_depth, method)
 
     def _build_kraus(self) -> np.ndarray:
         """creates the Kraus operator
@@ -646,20 +597,6 @@ class Dual_poisson_sim_params(Simulation_parameters):
             else:
                 filtered_results[key] = results[key]
         return filtered_results
-
-    def set_sampling_scheme(self, max_depth: int, method: str, *args):
-        """set the schedule
-
-        Args:
-            max_depth (int): maximum number of Grover iterators
-            method (str): type of schedule
-        """
-        #if method is PIS, args[0] should contain the power
-        if method == "PIS":
-            power = args[0]
-        else:
-            power = 1
-        self.max_depth_range = self.create_depth_list(max_depth, power)
     
     def get_fname(self):
         """returns the string for the file name
@@ -672,4 +609,4 @@ class Dual_poisson_sim_params(Simulation_parameters):
         )
 
 if __name__ == "__main__":
-    x = 2
+    pass

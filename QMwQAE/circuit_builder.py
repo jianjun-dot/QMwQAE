@@ -7,11 +7,49 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import pickle
 
+class Scheduler():
+    """small class to create the schedule to work with
+    """
+    def __init__(self): 
+        self.method_names = {
+            "LIS": self.linear_schedule,
+            "EIS": self.exponential_schedule,
+            "PIS": self.polynomial_schedule
+        }
+
+    def linear_schedule(self, max_iter, shots, *args):
+        schedule = [[x, shots] for x in range(max_iter+1)]
+        return schedule
+    
+    def polynomial_schedule(self, max_iter, shots, polyPower):
+        supportedMaxIter = int(max_iter**(1/polyPower))
+        schedule = [[x, shots] for x in range(supportedMaxIter+1)]
+        return schedule
+    
+    def exponential_schedule(self, max_iter, shots, *args):
+        supportedMaxIter = int(np.log2(max_iter))
+        schedule = [0, shots] + [[2**x, shots] for x in range(supportedMaxIter+1)]
+        return schedule
+
+    def custom_schedule(self, grover_iter_list, shots_list, *args):
+        assert len(grover_iter_list) == len(shots_list)
+        return zip(grover_iter_list, shots_list)
+
+    def create_schedule_from_method(self, method, max_iter, shots, *args):
+        if method in self.method_names.keys():
+            fn_to_use = self.method_names[method]
+            return fn_to_use(max_iter, shots, *args)
+        else:
+            raise Exception("Method name not recognised")
+            
+
+        
+
 class Simulation_parameters():
     """class to contain all the essential parameters for the quantum circuit. A new stochastic process will be 
     build on top of this class
     """
-    def __init__(self, sequence: str, memory_size: int, starting_state, sample_size = 1, shots = 100, method = "EIS"):
+    def __init__(self, sequence: str, memory_size: int, starting_state, sample_size = 1, shots = 100):
         """initialize the object with the relevant parameters
 
         Args:
@@ -30,10 +68,7 @@ class Simulation_parameters():
         self.starting_state = starting_state
         self.kraus = []
         self.starting_vectors = []
-        self.method = method
         self.memory_size = memory_size
-
-        
 
     def set_starting_vectors(self, starting_vectors: list):
         """Set starting vectors
@@ -51,31 +86,8 @@ class Simulation_parameters():
         """
         self.kraus = kraus
     
-    def create_depth_list(self, max_depth: int, power = 1) -> list:
-        """creates the schedule for the experiment
-
-        Args:
-            max_depth (int): maximum number of Grover iterators to use
-            power (int, optional): degree of the polynomial scheme. Defaults to 1.
-
-        Raises:
-            Exception: invalid method given
-
-        Returns:
-            list: schedule for the experiment
-        """
-        if self.method == "EIS":
-            max_power = int(np.log2(max_depth))
-            max_depth_range = [0] + [2**x for x in range(0,max_power+1)]
-        elif self.method == "LIS":
-            max_depth_range = [x for x in range(0, max_depth+1)]
-        elif self.method == "PIS":
-            max_base = int(max_depth**(1./power))
-            max_depth_range = [x**power for x in range(0, max_base+1)]
-        else:
-            raise Exception("Invalid Method: {}".format(self.method))
-        self.max_depth_range = max_depth_range
-        return max_depth_range
+    def set_schedule(self, schedule):
+        self.schedule = schedule
 
     def import_kraus(self, relative_path: str):
         """imports the kraus operator from file
@@ -227,7 +239,6 @@ class Quantum_circuit_builder():
         self.oracle_qc = oracle_qc.to_instruction()
         self.oracle_qc.name = "oracle"
         
-    
     def build_phase_shift_operator(self):
         """create the phase shift gate for the quantum circuit
         """
@@ -240,7 +251,6 @@ class Quantum_circuit_builder():
         self.phase_shift_qc = phase_shift_qc.to_instruction()
         self.phase_shift_qc.name = 'phase shift'
         
-    
     def build_A_operator(self,visualize = False):
         """create the algorithm operator for the Grover iterator
 
@@ -320,7 +330,6 @@ class Quantum_circuit_builder():
         self.build_phase_shift_operator()
         self.build_amplifier()
 
-
     def single_run(self, num_amplifier:int, shots: int, visualize = False)-> dict:
         """run one trial of the quantum circuit at a certain number of Grover iterators
 
@@ -353,11 +362,11 @@ class Quantum_circuit_builder():
 
         return counts
 
-    def run_amplitude_estimation_circuit(self, depth_range: list, shots: int)-> list:
+    def run_amplitude_estimation_circuit(self, schedule: list)-> list:
         """run one trial of the quanutm circuit for MLAE
 
         Args:
-            depth_range (int): the schedule
+            schedule (list(list)): the schedule
             shots (int): number of shots per circuit
 
         Returns:
@@ -365,7 +374,10 @@ class Quantum_circuit_builder():
         """
         backend = Aer.get_backend('qasm_simulator')
         results = []
-        for num_iter in tqdm(depth_range, desc = "running circuits", leave = False):
+        for item in tqdm(schedule, desc = "running circuits", leave = False):
+            # get number of grover iterators and shots
+            num_iter = item[0]
+            curr_shots = item[1]
             # build the circuit
             curr_qc = QuantumCircuit(self.sequence_length+self.memory_size, self.sequence_length)
             curr_qc.append(self.unitary_evolution, range(self.sequence_length+self.memory_size))
@@ -374,7 +386,7 @@ class Quantum_circuit_builder():
             curr_qc.measure(range(self.sequence_length), range(self.sequence_length))
             
             # run the circuit and get result
-            job = execute(curr_qc, backend, shots = shots)
+            job = execute(curr_qc, backend, shots = curr_shots)
             result = job.result()
             counts = result.get_counts()
             # print("counts: {} \n".format(counts))

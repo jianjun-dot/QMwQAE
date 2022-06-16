@@ -51,11 +51,11 @@ class Experiment():
             prob_list.append(curr_prob)
         return prob_list
 
-    def _amplitude_estimate_bulk_sample_single(self, max_depth: int)-> list:
+    def _amplitude_estimate_bulk_sample_single(self, depth_shots)-> list:
         """samples the quantum model
 
         Args:
-            max_depth (int): maximum number of Grover iterators
+            depth_shots (list): [maximum number of Grover iterators, shots]
 
         Returns:
             list: list of probabilities
@@ -67,11 +67,12 @@ class Experiment():
         all_estimates = []
         my_qc = circuit_builder.Quantum_circuit_builder(self.sim_params)
         my_qc.build_circuit_components(self.sim_params)
-        max_depth_index = self.sim_params.max_depth_range.index(max_depth)
-        depth_range = self.sim_params.max_depth_range[:max_depth_index]
+        
+        max_depth_index = self.sim_params.schedule.index(depth_shots)
+        depth_range = self.sim_params.schedule[:max_depth_index]
 
         for _ in range(sample_size):
-            results = my_qc.run_amplitude_estimation_circuit(depth_range, shots)
+            results = my_qc.run_amplitude_estimation_circuit(depth_range)
             my_processor = circuit_builder.Post_processor(results)
             theta = my_processor.ml_estimation(shots)
             estimated_prob = (np.sin(theta))**2
@@ -89,19 +90,19 @@ class Experiment():
         # unpack parameters
         sequence = self.sim_params.sequence_to_amplify
         shots = self.sim_params.shots
-        max_depth_range = self.sim_params.max_depth_range
+        max_depth_range = self.sim_params.schedule
         
         all_quantum_estimates = []
         all_classical_estimates = []
         true_probability = classical_model.calculate_true_prob(sequence, self.sim_params.starting_state)
-        for curr_depth in tqdm(max_depth_range, desc = 'progress', leave = False):
-            curr_quantum_estimates = self._amplitude_estimate_bulk_sample_single(curr_depth)
+        for curr_depth_shots in tqdm(max_depth_range, desc = 'progress', leave = False):
+            curr_quantum_estimates = self._amplitude_estimate_bulk_sample_single(curr_depth_shots)
             curr_quantum_mean = np.mean(curr_quantum_estimates)
             curr_quantum_std = np.std(curr_quantum_estimates)
             # unbiased estimate
             curr_quantum_std = np.sqrt(len(curr_quantum_estimates)/(len(curr_quantum_estimates)-1)) * curr_quantum_std
             all_quantum_estimates.append([curr_quantum_mean, curr_quantum_std])
-            classical_runs = self._classical_equivalent_runs_calculator(shots, curr_depth)
+            classical_runs = self._classical_equivalent_runs_calculator(shots, curr_depth_shots)
             curr_classical_estimates = self._classical_sample_single(classical_runs, sequence, classical_model)
             curr_classical_mean = np.mean(curr_classical_estimates)
             curr_classical_std = np.std(curr_classical_estimates)
@@ -166,56 +167,98 @@ class Experiment():
         # plt.show()
         plt.savefig(self.sim_params.graph_dir+'std_'+fname+'.png')
     
-    def estimate_probability(self, *args):
+    def estimate_probability(self, **kwargs):
         """estimate the probability of the given sequence, averaged over the sample size
 
+            accepted keywords: 
+            {
+                max_depth: int
+                error: float
+                estimated_prob: float
+                method: str
+                schedule: list
+                poly_power: polynomial power for PIS schedule
+            }
+            kwargs should minimally contain (max_depth) or (error, estimated_prob)
         Raises:
             Exception: invalid input
         """
-        if len(args) == 2:
-            max_depth = self._calc_required_depth(args[0], args[1])
+        #create scheduler
+        myScheduler = circuit_builder.Scheduler()
+        if kwargs.get("schedule") is not None:
+            self.sim_params.set_schedule(kwargs["schedule"])
+        elif kwargs.get("error") is not None:
+            curr_error = kwargs["error"]
+            try:
+                curr_estimated_prob = kwargs["estimated_prob"]
+            except:
+                raise Exception("error input must be accompanied by the estimated probability")
+            max_depth = self._calc_required_depth(curr_error, curr_estimated_prob)
             max_depth = max(max_depth, 5)
             print("Using {} Grover iterators... \n".format(max_depth))
-        elif len(args) == 1:
-            max_depth = args[0]
+            if kwargs.get("method") is not None:
+                curr_schedule = myScheduler.create_schedule_from_method(kwargs["method"], 
+                max_depth, self.sim_params.shots, kwargs.get(["poly_power"]))
+            else:
+                curr_schedule = myScheduler.create_schedule_from_method("LIS", 
+                max_depth, self.sim_params.shots)
+            
+        elif kwargs.get("max_depth") is not None:
+            curr_schedule = myScheduler.create_schedule_from_method("LIS", max_depth, self.sim_params.shots)
+            self.sim_params.set_schedule(curr_schedule)
+
         else:
-            raise Exception("Input format: (error, estimated_prob) or (max_depth)")
-        self.sim_params.set_sampling_scheme(max_depth, "LIS")
+            raise Exception("Invalid input format")
         quantum_estimates = self._amplitude_estimate_bulk_sample_single(max_depth)
         quantum_mean = np.mean(quantum_estimates)
         quantum_std = np.std(quantum_estimates)
         print("estimated probability: {} ({})".format(quantum_mean, quantum_std))
     
-    def estimate_probability_quick(self, *args):
+    def estimate_probability_quick(self, **kwargs):
         """quick estimate of the probability with only 1 trial
 
         Raises:
             Exception: invalid input
         """
-        if len(args) == 2:
-            max_depth = self._calc_required_depth(args[0], args[1])
+        myScheduler = circuit_builder.Scheduler()
+        if kwargs.get("schedule") is not None:
+            self.sim_params.set_schedule(kwargs["schedule"])
+        elif kwargs.get("error") is not None:
+            curr_error = kwargs["error"]
+            try:
+                curr_estimated_prob = kwargs["estimated_prob"]
+            except:
+                raise Exception("error input must be accompanied by the estimated probability")
+            max_depth = self._calc_required_depth(curr_error, curr_estimated_prob)
             max_depth = max(max_depth, 5)
             print("Using {} Grover iterators... \n".format(max_depth))
-        elif len(args) == 1:
-            max_depth = args[0]
+            if kwargs.get("method") is not None:
+                curr_schedule = myScheduler.create_schedule_from_method(kwargs["method"], 
+                max_depth, self.sim_params.shots, kwargs.get(["poly_power"]))
+            else:
+                curr_schedule = myScheduler.create_schedule_from_method("LIS", 
+                max_depth, self.sim_params.shots)
+            self.sim_params.set_schedule(curr_schedule)
+            
+        elif kwargs.get("max_depth") is not None:
+            curr_schedule = myScheduler.create_schedule_from_method("LIS", max_depth, self.sim_params.shots)
+            self.sim_params.set_schedule(curr_schedule)
+
         else:
-            raise Exception("Input format: (error, estimated_prob) or (max_depth)")
-        
-        shots = self.sim_params.shots
-        self.sim_params.set_sampling_scheme(max_depth, "LIS")
+            raise Exception("Invalid input format")
         sample_size = 1
         all_estimates = []
         my_qc = circuit_builder.Quantum_circuit_builder(self.sim_params)
         my_qc.build_circuit_components(self.sim_params)
 
         for _ in range(sample_size):
-            results = my_qc.run_amplitude_estimation_circuit(self.sim_params.max_depth_range, shots)
+            results = my_qc.run_amplitude_estimation_circuit(self.sim_params.schedule)
             my_processor = circuit_builder.Post_processor(results)
             theta = my_processor.ml_estimation(shots)
             estimated_prob = (np.sin(theta))**2
             all_estimates.append(estimated_prob)
         quantum_mean = np.mean(all_estimates)
-        print("estimated probability: {} ({})".format(quantum_mean, args[0]))
+        print("estimated probability: {} ({})".format(quantum_mean, kwargs.get("error")))
 
     def _calc_required_depth(self, error: float, estimated_prob: float) -> int:
         """calculate the number of Grover iterators for the given error and estimated probability
@@ -286,7 +329,7 @@ if __name__ == "__main__":
     max_depth = 8
 
     my_coin = examples.Perturbed_coin(p, p, starting_state)
-    my_params = examples.Perturbed_coin_simulation_params(p, sequence, sample_size, shots, starting_state, method, max_depth)
+    my_params = examples.Perturbed_coin_simulation_params(p, sequence, sample_size, shots, starting_state)
     
     my_expt = Experiment(my_params)
     error = 0.0001
@@ -295,7 +338,7 @@ if __name__ == "__main__":
 
     # my_expt.estimate_probability(10)
     # my_expt.estimate_probability(error, estimated_prob)
-    my_expt.estimate_probability_quick(error, estimated_prob)
+    my_expt.estimate_probability_quick(error=error, estimated_prob=estimated_prob)
     #################################
 
     ################################

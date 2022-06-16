@@ -4,6 +4,7 @@ from qiskit.utils import QuantumInstance
 from qiskit.algorithms import MaximumLikelihoodAmplitudeEstimation
 import experiment
 import examples
+import circuit_builder
 
 def main():
     """function to demonstrate the exporting of EstimationProblem
@@ -14,16 +15,13 @@ def main():
     starting_state = 0
     print("starting causal state: {}".format(starting_state))
 
-    method = "EIS"
-    sample = '000'
-    method_tuple = (method, 1)
-    print("sequence: {}".format(sample))
+    sequence = '000'
+    print("sequence: {}".format(sequence))
 
     shots = 100
-    max_depth = 10
     sample_size = 100
 
-    sim_params = examples.Perturbed_coin_simulation_params(p, sample, sample_size, shots, starting_state, method_tuple, max_depth)
+    sim_params = examples.Perturbed_coin_simulation_params(p, sequence, sample_size, shots, starting_state)
 
     my_expt = experiment.Experiment(sim_params)
 
