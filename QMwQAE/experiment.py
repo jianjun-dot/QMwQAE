@@ -6,6 +6,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 from qiskit.algorithms import EstimationProblem
 import pickle
+from helper import file_helper
 
 class Experiment():
     def __init__(self, sim_params: circuit_builder.Simulation_parameters):
@@ -52,7 +53,7 @@ class Experiment():
         return prob_list
 
     def _amplitude_estimate_bulk_sample_single(self, depth_shots)-> list:
-        """samples the quantum model
+        """samples the quantum model for a specific sequence
 
         Args:
             depth_shots (list): [maximum number of Grover iterators, shots]
@@ -129,9 +130,12 @@ class Experiment():
                             all_quantum_error,
                             true_prob_line]).T
 
-        np.savetxt(self.sim_params.data_dir+fname+".csv", data_out, delimiter = ',', 
-                    header = 'depth, classical estimates, classical std, classical error, quantum estimates, quantum std, quantum error, true probability')
+        # np.savetxt(self.sim_params.data_dir+fname+".csv", data_out, delimiter = ',', 
+        #             header = 'depth, classical estimates, classical std, classical error, quantum estimates, quantum std, quantum error, true probability')
         
+        # save file
+        file_helper.save(data_out, self.sim_params)
+
         plt.figure(figsize=(6.5,6))
         plt.clf()
         plt.errorbar(max_depth_range, all_quantum_estimates[:,0], yerr = all_quantum_estimates[:,1], fmt = 'o-', capsize = 5, label = 'quantum' )
@@ -316,6 +320,7 @@ class Experiment():
 
 if __name__ == "__main__":
 
+    print(file_helper.get_time_stamp())
     ###############################
     # for perturbed coin
     p = 0.1
