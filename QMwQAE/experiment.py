@@ -28,7 +28,7 @@ class Experiment():
 
         return shots * np.sum([2 * m +1 for m in depth_range])
 
-    def _classical_sample_single(self, shots: int, sequence: str, classical_model) -> list:
+    def _classical_sample_single(self, shots: int, sequence: str, classical_model, sample_size=1) -> list:
         """samples the classical model
 
         Args:
@@ -44,7 +44,7 @@ class Experiment():
         sequence_length = self.sim_params.sequence_length
         prob_list = []
         my_post_processor = circuit_builder.Classical_post_processor()
-        for _ in range(1):
+        for _ in range(sample_size):
             results = classical_model.sample(shots, sequence_length, initial_state)
             curr_counts = results.get(sequence, 0)
             curr_prob = my_post_processor.ml_estimation(shots, curr_counts)
@@ -94,15 +94,19 @@ class Experiment():
         all_quantum_estimates = []
         all_classical_estimates = []
         true_probability = classical_model.calculate_true_prob(sequence, self.sim_params.starting_state)
+        all_raw_quantum_estimates = []
+        all_raw_classical_estimates = []
         for curr_depth in tqdm(max_depth_range, desc = 'progress', leave = False):
             curr_quantum_estimates = self._amplitude_estimate_bulk_sample_single(curr_depth)
+            all_raw_quantum_estimates.append(curr_quantum_estimates)
             curr_quantum_mean = np.mean(curr_quantum_estimates)
             curr_quantum_std = np.std(curr_quantum_estimates)
             # unbiased estimate
             curr_quantum_std = np.sqrt(len(curr_quantum_estimates)/(len(curr_quantum_estimates)-1)) * curr_quantum_std
             all_quantum_estimates.append([curr_quantum_mean, curr_quantum_std])
             classical_runs = self._classical_equivalent_runs_calculator(shots, curr_depth)
-            curr_classical_estimates = self._classical_sample_single(classical_runs, sequence, classical_model)
+            curr_classical_estimates = self._classical_sample_single(classical_runs, sequence, classical_model, self.sim_params.sample_size)
+            all_raw_classical_estimates.append(curr_classical_estimates)
             curr_classical_mean = np.mean(curr_classical_estimates)
             curr_classical_std = np.std(curr_classical_estimates)
             curr_classical_std = np.sqrt(len(curr_classical_estimates)/(len(curr_classical_estimates)-1)) * curr_classical_std
@@ -130,6 +134,9 @@ class Experiment():
 
         np.savetxt(self.sim_params.data_dir+fname+".csv", data_out, delimiter = ',', 
                     header = 'depth, classical estimates, classical std, classical error, quantum estimates, quantum std, quantum error, true probability')
+        
+        np.savetxt(self.sim_params.data_dir+"raw-classical-"+fname+".csv", np.array(all_raw_classical_estimates), delimiter = ',')
+        np.savetxt(self.sim_params.data_dir+"raw-quantum-"+fname+".csv", np.array(all_raw_quantum_estimates), delimiter = ',')
         
         plt.figure(figsize=(6.5,6))
         plt.clf()
@@ -276,14 +283,16 @@ if __name__ == "__main__":
     ###############################
     # for perturbed coin
     p = 0.1
-    method = ["EIS", 2]
-    sequence = '0010'
+    # method = ["EIS", 2]
+    # method = ["LIS", 2]
+    method = ["PIS", 2]
+    sequence = '0000'
 
     sequence_length = len(sequence)
     shots = 100
     sample_size = 1000
     starting_state = 0
-    max_depth = 8
+    max_depth = 30
 
     my_coin = examples.Perturbed_coin(p, p, starting_state)
     my_params = examples.Perturbed_coin_simulation_params(p, sequence, sample_size, shots, starting_state, method, max_depth)
@@ -291,11 +300,11 @@ if __name__ == "__main__":
     my_expt = Experiment(my_params)
     error = 0.0001
     estimated_prob = 0.0001
-    # my_expt.compare_quantum_advantage(my_coin)
+    my_expt.compare_quantum_advantage(my_coin)
 
     # my_expt.estimate_probability(10)
     # my_expt.estimate_probability(error, estimated_prob)
-    my_expt.estimate_probability_quick(error, estimated_prob)
+    # my_expt.estimate_probability_quick(error, estimated_prob)
     #################################
 
     ################################
@@ -304,16 +313,18 @@ if __name__ == "__main__":
     # q1 = 0.1
     # q2 = 0.2
 
-    # method = ["LIS", 1]
-    # sequence = '000'
+    # # method = ["LIS", 1]
+    # # method = ["EIS", 2]
+    # method = ["PIS", 2]
+    # sequence = '0000'
     
     # sequence_length = len(sequence)
     # shots = 100
-    # sample_size = 100
+    # sample_size = 1000
     # starting_state = 0
-    # max_depth = 5
+    # max_depth = 30
 
-    # my_classical_poisson = examples.dual_poisson_process(p, q1, q2)
+    # my_classical_poisson = examples.Dual_poisson_process(p, q1, q2)
     # my_params = examples.Dual_poisson_sim_params(p, q1, q2, sample_size, sequence, shots, method, max_depth)
     
     # my_expt = Experiment(my_params)
@@ -323,14 +334,16 @@ if __name__ == "__main__":
     # for Nemo process
     # p = 0.1
     
-    # method = ["LIS", 1]
-    # sequence = '000'
+    # # method = ["LIS", 1]
+    # # method = ["EIS", 2]
+    # # method = ["PIS", 2]
+    # sequence = '0000'
     
     # sequence_length = len(sequence)
     # shots = 100
-    # sample_size = 100
+    # sample_size = 1000
     # starting_state = 0
-    # max_depth = 5
+    # max_depth = 30
 
     # my_nemo = examples.Nemo_process(p)
     # my_params = examples.Nemo_sim_params(p, sequence, 2, sample_size, shots, starting_state, method, max_depth)

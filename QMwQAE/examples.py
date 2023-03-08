@@ -165,8 +165,8 @@ class Perturbed_coin_simulation_params(Simulation_parameters):
         super(Perturbed_coin_simulation_params, self).__init__(sequence, 1, starting_state, sample_size, shots, method)
         
         self.p = p
-        self.graph_dir = '../graphs/perturbed_coin/' # directories for saving
-        self.data_dir = '../data/perturbed_coin/error_analysis/' # directories for saving
+        self.graph_dir = '../data/perturbed_coin/' # directories for saving
+        self.data_dir = '../data/perturbed_coin/' # directories for saving
         if method == "PIS":
             self.set_sampling_scheme(max_depth, method, method_tuple[1])
         else:
@@ -366,8 +366,8 @@ class Nemo_sim_params(Simulation_parameters):
         method = method_tuple[0]
         super(Nemo_sim_params, self).__init__(sequence, memory_size, starting_state, sample_size, shots, method)
         self.p = p
-        self.graph_dir = 'graphs/nemo/'
-        self.data_dir = 'data/nemo/error_analysis/'
+        self.graph_dir = '../data/nemo/'
+        self.data_dir = '../data/nemo/'
         self.overlap_matrix = np.array([
             [1, np.sqrt(p * (1-p))/(1+p), np.sqrt(2*p)/(1+p)],
             [np.sqrt(p * (1-p))/(1+p), 1, np.sqrt(p)/(1+p)],
@@ -583,8 +583,8 @@ class Dual_poisson_sim_params(Simulation_parameters):
         self.q1 = q1
         self.q2 = q2
         self.p_bar = 1-p
-        self.graph_dir = 'graphs/dual_poisson/'
-        self.data_dir = 'data/dual_poisson/error_analysis/'
+        self.graph_dir = '../data/dual_poisson/'
+        self.data_dir = '../data/dual_poisson/'
         self.g = (np.sqrt((1-self.q1)*(1-self.q2))/(1-np.sqrt(self.q1 * self.q2)))
         self._build_kraus()
         self._build_first_causal_state()
